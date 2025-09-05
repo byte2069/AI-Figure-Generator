@@ -1,12 +1,38 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function Page() {
-  const [prompt, setPrompt] = useState("a cute chibi ninja figure on a clear stand");
-  const [loading, setLoading] = useState(false);
+  const [prompt, setPrompt] = useState(
+    "a stylized figure wearing a black suit and red tie, crown on head, holding a baton, dynamic pose on a transparent stand, on a desk in front of a monitor"
+  );
+  const [boxed, setBoxed] = useState(true);
+  const [aspect, setAspect] = useState("1:1");
   const [images, setImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [imgStrength, setImgStrength] = useState(0.55);
+  const [imgPreview, setImgPreview] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (!f) return setImgPreview(null);
+    const reader = new FileReader();
+    reader.onload = () => setImgPreview(String(reader.result));
+    reader.readAsDataURL(f);
+  }
+
+  async function uploadIfNeeded(): Promise<string | undefined> {
+    const f = fileRef.current?.files?.[0];
+    if (!f) return undefined;
+    const fd = new FormData();
+    fd.append("file", f);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    if (!res.ok) throw new Error("Upload failed");
+    const data = await res.json();
+    return data.url as string;
+  }
 
   async function generate() {
     try {
@@ -14,10 +40,18 @@ export default function Page() {
       setError(null);
       setImages([]);
 
+      const imageUrl = await uploadIfNeeded();
+
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, boxed: true, aspectRatio: "1:1" }),
+        body: JSON.stringify({
+          prompt,
+          boxed,
+          aspectRatio: aspect,
+          imageUrl,
+          strength: imgStrength,
+        }),
       });
 
       if (!res.ok) {
@@ -35,49 +69,156 @@ export default function Page() {
   }
 
   return (
-    <main style={{ padding: 40, fontFamily: "sans-serif" }}>
-      <h1 style={{ fontSize: 24, marginBottom: 12 }}>AI Figure Generator</h1>
+    <main
+      style={{
+        minHeight: "100svh",
+        display: "grid",
+        gridTemplateRows: "auto 1fr",
+        fontFamily: "Inter, ui-sans-serif, system-ui",
+      }}
+      className="p-6"
+    >
+      <header style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <h1 style={{ fontSize: 28, fontWeight: 700 }}>AI Figure Generator</h1>
+        <span style={{ opacity: 0.6 }}>| Next.js + Replicate</span>
+      </header>
 
-      <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        rows={4}
-        style={{ width: "100%", padding: 8, marginBottom: 12 }}
-      />
-
-      <div>
-        <button
-          onClick={generate}
-          disabled={loading}
+      <section style={{ display: "grid", gridTemplateColumns: "420px 1fr", gap: 24, marginTop: 16 }}>
+        <div
           style={{
-            background: "#3b82f6",
-            color: "white",
-            padding: "10px 16px",
-            borderRadius: 8,
-            border: "none",
-            cursor: "pointer",
+            background: "#101317",
+            border: "1px solid #1b2026",
+            borderRadius: 16,
+            padding: 16,
+            position: "sticky",
+            top: 16,
+            height: "fit-content",
           }}
         >
-          {loading ? "Generating..." : "Generate"}
-        </button>
-      </div>
-
-      {error && (
-        <div style={{ marginTop: 16, color: "red" }}>
-          Error: {error}
-        </div>
-      )}
-
-      <div style={{ marginTop: 24, display: "grid", gap: 16 }}>
-        {images.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt={`gen-${i}`}
-            style={{ maxWidth: "100%", border: "1px solid #ddd", borderRadius: 8 }}
+          <label style={{ fontSize: 13, opacity: 0.85 }}>Prompt</label>
+          <textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            rows={8}
+            style={{
+              width: "100%",
+              marginTop: 6,
+              padding: 12,
+              borderRadius: 12,
+              background: "#0b0d10",
+              color: "#e8e9ea",
+              border: "1px solid #1b2026",
+              outline: "none",
+              resize: "vertical",
+            }}
           />
-        ))}
-      </div>
+
+          <div style={{ display: "grid", gap: 12, marginTop: 12 }}>
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <input id="boxed" type="checkbox" checked={boxed} onChange={(e) => setBoxed(e.target.checked)} />
+              <label htmlFor="boxed">Add retail box next to figure</label>
+            </div>
+
+            <div>
+              <label style={{ fontSize: 13, opacity: 0.85 }}>Aspect ratio</label>
+              <select
+                value={aspect}
+                onChange={(e) => setAspect(e.target.value)}
+                style={{
+                  width: "100%",
+                  marginTop: 6,
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  background: "#0b0d10",
+                  color: "#e8e9ea",
+                  border: "1px solid #1b2026",
+                }}
+              >
+                <option value="1:1">1:1</option>
+                <option value="3:4">3:4</option>
+                <option value="4:3">4:3</option>
+                <option value="16:9">16:9</option>
+              </select>
+            </div>
+
+            <div style={{ marginTop: 8 }}>
+              <label style={{ fontSize: 13, opacity: 0.85 }}>Image to transform (optional)</label>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                onChange={onFileChange}
+                style={{
+                  width: "100%",
+                  marginTop: 6,
+                  padding: 8,
+                  borderRadius: 12,
+                  background: "#0b0d10",
+                  color: "#e8e9ea",
+                  border: "1px solid #1b2026",
+                }}
+              />
+              {imgPreview && (
+                <img src={imgPreview} alt="preview" style={{ marginTop: 8, width: "100%", borderRadius: 12, border: "1px solid #1b2026" }} />
+              )}
+              <div style={{ display: "grid", gap: 6, marginTop: 10 }}>
+                <label style={{ fontSize: 13, opacity: 0.85 }}>
+                  Img strength: {imgStrength.toFixed(2)}
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={imgStrength}
+                  onChange={(e) => setImgStrength(parseFloat(e.target.value))}
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={generate}
+              disabled={loading}
+              style={{
+                background: loading ? "#2b323c" : "#3b82f6",
+                color: "white",
+                border: 0,
+                borderRadius: 12,
+                padding: "12px 16px",
+                cursor: loading ? "not-allowed" : "pointer",
+                fontWeight: 600,
+              }}
+            >
+              {loading ? "Generating…" : "Generate"}
+            </button>
+
+            {error && (
+              <div
+                style={{ background: "#221214", color: "#ffb4b4", border: "1px solid #43282b", borderRadius: 12, padding: 12, fontSize: 14 }}
+              >
+                {error}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gap: 16 }}>
+          {!images.length && !loading && (
+            <div style={{ opacity: 0.6, border: "1px dashed #1b2026", borderRadius: 16, padding: 24 }}>
+              Results will appear here.
+            </div>
+          )}
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
+            {images.map((src, i) => (
+              <figure key={i} style={{ background: "#0b0d10", border: "1px solid #1b2026", borderRadius: 16, overflow: "hidden" }}>
+                <img src={src} alt={`generation-${i}`} style={{ width: "100%", display: "block" }} />
+                <figcaption style={{ padding: 10, fontSize: 12, opacity: 0.75 }}>{prompt.slice(0, 120)}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
