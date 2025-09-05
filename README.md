@@ -1,9 +1,9 @@
-# AI Figure Generator (full)
-- Next.js 14 (App Router) + Replicate
-- Client upload via `@vercel/blob/client`
-- Default aspect ratio 1:1 (UI đã bỏ lựa chọn)
+# AI Figure Generator (fixed)
+- Client upload via `@vercel/blob/client` **with** `handleUploadUrl: "/api/blob"`
+- `/api/blob` uses `handleUpload` to sign and complete uploads (no serverless body limit)
+- Default aspect ratio 1:1
 
-## Run locally
+## Run
 ```bash
 npm i
 echo REPLICATE_API_TOKEN=YOUR_TOKEN > .env.local
@@ -11,5 +11,4 @@ npm run dev
 ```
 
 ## Deploy
-- Add `REPLICATE_API_TOKEN` in Vercel → Project → Settings → Environment Variables.
-- Add your domain (e.g. ai.datnh.info) with CNAME to the Vercel DNS target.
+Add env on Vercel: `REPLICATE_API_TOKEN`.
