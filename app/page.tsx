@@ -28,8 +28,21 @@ export default function Page() {
     const f = fileRef.current?.files?.[0];
     if (!f) return undefined;
     if (f.size > 15 * 1024 * 1024) throw new Error("File > 15MB — hãy chọn ảnh nhỏ hơn.");
-    // IMPORTANT: provide handleUploadUrl so the server can sign the upload
-    const { url } = await upload(f.name, f, { access: "public", handleUploadUrl: "/api/blob" });
+
+    const res = await fetch("/api/blob", { method: "GET" });
+    const text = await res.text();
+    let token: any;
+    try {
+      token = JSON.parse(text);
+    } catch {
+      throw new Error(`Blob token failed (${res.status}). Body: ${text.slice(0,120)}`);
+    }
+
+    const { url } = await upload(f.name, f, {
+      access: "public",
+      clientToken: token.clientToken,
+    });
+
     return url;
   }
 
@@ -38,15 +51,12 @@ export default function Page() {
       setLoading(true);
       setError(null);
       setImages([]);
-
       const imageUrl = await uploadIfNeeded();
-
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, boxed, imageUrl, strength: imgStrength }),
       });
-
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || `HTTP ${res.status}`);
@@ -102,7 +112,7 @@ export default function Page() {
               {loading ? "Generating…" : "Generate"}
             </button>
 
-            {error && <div style={{background:"#221214",color:"#ffb4b4",border:"1px solid #43282b",borderRadius:14,padding:12,fontSize:14}}>{error}</div>}
+            {error && <div style={{background:"#221214",color:"#ffb4b4",border:"1px solid #43282b",borderRadius:14,padding:12,fontSize:14,whiteSpace:"pre-wrap"}}>{error}</div>}
           </div>
         </section>
 
