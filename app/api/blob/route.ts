@@ -1,19 +1,20 @@
 // app/api/blob/route.ts
-import { handleUpload } from "@vercel/blob/client";
+import { handleUpload } from "@vercel/blob";
 
 export const runtime = "edge";
 
 export async function POST(request: Request) {
-  // Let Vercel sign the upload and store it directly from the browser → Blob storage
   return handleUpload({
     request,
-    onBeforeGenerateToken: async () => ({
-      allowedContentTypes: ["image/*"],
-      maximumSizeInBytes: 15 * 1024 * 1024,
-      access: "public",
-    }),
+    onBeforeGenerateToken: async () => {
+      return {
+        allowedContentTypes: ["image/*"],
+        maximumSizeInBytes: 15 * 1024 * 1024, // 15MB
+        access: "public",
+      };
+    },
     onUploadCompleted: async ({ blob }) => {
-      // optional: console.log("Uploaded", blob.url);
+      console.log("Upload completed:", blob.url);
     },
   });
 }
