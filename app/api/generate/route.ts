@@ -11,12 +11,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       prompt,
-      aspectRatio = "1:1",
       guidance = 3.5,
       steps = 28,
       boxed = true,
       imageUrl,
-      strength = 0.55,
+      strength = 0.55
     } = body ?? {};
 
     if (!prompt || typeof prompt !== "string") {
@@ -28,10 +27,8 @@ export async function POST(req: Request) {
       "studio lighting, photorealistic, sharp focus,",
       "transparent acrylic display base,",
       boxed ? "windowed retail box packaging beside figure," : "",
-      "volumetric light, soft shadows, highly detailed",
-    ]
-      .filter(Boolean)
-      .join(" ");
+      "volumetric light, soft shadows, highly detailed"
+    ].filter(Boolean).join(" ");
 
     const fullPrompt = `${prompt}, ${style}`;
     const replicate = new Replicate({ auth: process.env.REPLICATE_API_TOKEN });
@@ -47,21 +44,21 @@ export async function POST(req: Request) {
           scheduler: "K_EULER_ANCESTRAL",
           num_inference_steps: steps,
           guidance_scale: guidance,
-          aspect_ratio: aspectRatio,
-          output_format: "png",
-        },
+          aspect_ratio: "1:1",
+          output_format: "png"
+        }
       })) as string[];
       images = out;
     } else {
       const out = (await replicate.run("black-forest-labs/flux-schnell", {
         input: {
           prompt: fullPrompt,
-          aspect_ratio: aspectRatio,
+          aspect_ratio: "1:1",
           num_outputs: 1,
           guidance,
           num_inference_steps: steps,
-          output_format: "png",
-        },
+          output_format: "png"
+        }
       })) as string[];
       images = out;
     }

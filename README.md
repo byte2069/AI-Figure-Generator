@@ -1,16 +1,15 @@
-# AI Figure Generator (Next.js 14 + Replicate)
+# AI Figure Generator (full)
+- Next.js 14 (App Router) + Replicate
+- Client upload via `@vercel/blob/client`
+- Default aspect ratio 1:1 (UI đã bỏ lựa chọn)
 
-## Quick start
+## Run locally
 ```bash
 npm i
+echo REPLICATE_API_TOKEN=YOUR_TOKEN > .env.local
 npm run dev
 ```
 
-Create `.env.local` with:
-```
-REPLICATE_API_TOKEN=YOUR_TOKEN
-```
-
-## Deploy on Vercel
-- Add `REPLICATE_API_TOKEN` in Project → Settings → Environment Variables.
-- Add your custom domain (e.g., ai.example.com) and point CNAME accordingly.
+## Deploy
+- Add `REPLICATE_API_TOKEN` in Vercel → Project → Settings → Environment Variables.
+- Add your domain (e.g. ai.datnh.info) with CNAME to the Vercel DNS target.
