@@ -16,14 +16,13 @@ export default async function handler(req, res) {
     }
 
     const payload = {
-  version: process.env.MODEL_VERSION || "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
-  input: {
-    text: prompt || "",              // thay vì prompt
-    output_format: output_format || "jpg",
-    ...(images && images.length > 0 ? { image_input: images } : {})
-  }
-};
-
+      version: process.env.MODEL_VERSION || "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
+      input: {
+        text: prompt || "",
+        output_format: output_format || "jpg",
+        ...(images && images.length > 0 ? { image_input: images } : {})
+      }
+    };
 
     const resp = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
@@ -51,9 +50,17 @@ export default async function handler(req, res) {
     }
 
     const out = data.output;
-    const imageUrl = Array.isArray(out) ? out[0] : out;
+    let imageUrls = [];
 
-    res.status(200).json({ imageUrl });
+    if (Array.isArray(out)) {
+      imageUrls = out;
+    } else if (typeof out === "string") {
+      imageUrls = [out];
+    } else if (out && typeof out === "object") {
+      imageUrls = Object.values(out).filter(v => typeof v === "string");
+    }
+
+    res.status(200).json({ imageUrls });
   } catch (err) {
     console.error("Generate error:", err);
     res.status(500).json({ error: err.message || "Internal error" });

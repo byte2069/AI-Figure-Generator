@@ -61,8 +61,10 @@ runBtn.addEventListener("click", async () => {
       throw new Error("Generate API returned non-JSON: " + text);
     }
     if (!resp.ok) throw new Error(data.error || "Request failed");
-    if (data.imageUrl) {
-      resultEl.innerHTML = `<img src="${data.imageUrl}" alt="result" />`;
+    if (data.imageUrls && data.imageUrls.length > 0) {
+      resultEl.innerHTML = data.imageUrls
+        .map(url => `<img src="${url}" alt="result" />`)
+        .join("");
     } else {
       resetResult("Không nhận được URL ảnh.");
     }
