@@ -31,6 +31,12 @@ async function uploadToBlob(file) {
     debugEl.textContent = "Upload API raw response: " + text;
     throw new Error("Upload API returned non-JSON.");
   }
+
+  if (!data.url) {
+    debugEl.textContent = "Upload API response: " + JSON.stringify(data, null, 2);
+    throw new Error("Upload API did not return url.");
+  }
+
   return data.url.split("?")[0];
 }
 
