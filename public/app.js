@@ -35,10 +35,18 @@ async function uploadToBlob(file) {
   return data.url;
 }
 
+function showSpinner() {
+  resultEl.innerHTML = `
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <p>Đang xử lý với Replicate...</p>
+    </div>`;
+}
+
 runBtn.addEventListener("click", async () => {
   try {
     runBtn.disabled = true;
-    resetResult("Đang upload & chạy model...");
+    showSpinner();
     const files = [...imagesEl.files];
     const uploadedUrls = [];
     for (const f of files) {

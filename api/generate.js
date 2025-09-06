@@ -1,6 +1,22 @@
 // api/generate.js
 import fetch from "node-fetch";
 
+function extractStrings(obj) {
+  let urls = [];
+  if (typeof obj === "string") {
+    urls.push(obj);
+  } else if (Array.isArray(obj)) {
+    for (const v of obj) {
+      urls.push(...extractStrings(v));
+    }
+  } else if (obj && typeof obj === "object") {
+    for (const v of Object.values(obj)) {
+      urls.push(...extractStrings(v));
+    }
+  }
+  return urls;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method Not Allowed" });
@@ -51,17 +67,7 @@ export default async function handler(req, res) {
 
     console.log("Replicate raw output:", data.output);
 
-    const out = data.output;
-    let imageUrls = [];
-
-    if (Array.isArray(out)) {
-      imageUrls = out;
-    } else if (typeof out === "string") {
-      imageUrls = [out];
-    } else if (out && typeof out === "object") {
-      imageUrls = Object.values(out).filter(v => typeof v === "string");
-    }
-
+    const imageUrls = extractStrings(data.output);
     console.log("Normalized imageUrls:", imageUrls);
 
     res.status(200).json({ imageUrls });
