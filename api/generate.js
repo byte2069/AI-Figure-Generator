@@ -1,6 +1,14 @@
 // api/generate.js
 import fetch from "node-fetch";
 
+async function urlToBase64(url) {
+  const resp = await fetch(url);
+  const buffer = await resp.arrayBuffer();
+  const base64 = Buffer.from(buffer).toString("base64");
+  const mime = resp.headers.get("content-type") || "image/jpeg";
+  return `data:${mime};base64,${base64}`;
+}
+
 function extractStrings(obj) {
   let urls = [];
   if (typeof obj === "string") {
@@ -34,7 +42,7 @@ export default async function handler(req, res) {
     const payload = {
       version: process.env.MODEL_VERSION || "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
       input: {
-        text: prompt || "",   // FIX: use text instead of prompt
+        text: prompt || "",
         output_format: output_format || "jpg",
         ...(images && images.length > 0 ? { image_input: images } : {})
       }
@@ -66,10 +74,22 @@ export default async function handler(req, res) {
     }
 
     console.log("Replicate raw output:", data.output);
-    const imageUrls = extractStrings(data.output);
-    console.log("Normalized imageUrls:", imageUrls);
+    const urls = extractStrings(data.output);
+    console.log("Extracted urls:", urls);
 
-    res.status(200).json({ imageUrls });
+    const imagesBase64 = [];
+    for (const u of urls) {
+      if (typeof u === "string" && u.startsWith("http")) {
+        try {
+          const b64 = await urlToBase64(u);
+          imagesBase64.push(b64);
+        } catch (err) {
+          console.error("Error fetching image url:", u, err);
+        }
+      }
+    }
+
+    res.status(200).json({ imagesBase64 });
   } catch (err) {
     console.error("Generate error:", err);
     res.status(500).json({ error: err.message || "Internal error" });
