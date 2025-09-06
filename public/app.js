@@ -24,7 +24,13 @@ async function uploadToBlob(file) {
   const fd = new FormData();
   fd.append("file", file);
   const resp = await fetch("/api/upload", { method: "POST", body: fd });
-  const data = await resp.json();
+  const text = await resp.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error("Upload API returned non-JSON: " + text);
+  }
   if (!resp.ok) throw new Error(data.error || "Upload failed");
   return data.url;
 }
@@ -47,7 +53,13 @@ runBtn.addEventListener("click", async () => {
         images: uploadedUrls
       })
     });
-    const data = await resp.json();
+    const text = await resp.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      throw new Error("Generate API returned non-JSON: " + text);
+    }
     if (!resp.ok) throw new Error(data.error || "Request failed");
     if (data.imageUrl) {
       resultEl.innerHTML = `<img src="${data.imageUrl}" alt="result" />`;
