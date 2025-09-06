@@ -21,8 +21,7 @@ export default async function handler(req, res) {
     }
 
     const payload = {
-      version: process.env.MODEL_VERSION || 
-        "f0a9d34b12ad1c1cd76269a844b218ff4e64e128ddaba93e15891f47368958a0",
+      model: "google/nano-banana",
       input: {
         prompt: prompt || "",
         output_format: output_format || "jpg",
