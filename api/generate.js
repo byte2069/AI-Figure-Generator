@@ -49,6 +49,8 @@ export default async function handler(req, res) {
       return;
     }
 
+    console.log("Replicate raw output:", data.output);
+
     const out = data.output;
     let imageUrls = [];
 
@@ -59,6 +61,8 @@ export default async function handler(req, res) {
     } else if (out && typeof out === "object") {
       imageUrls = Object.values(out).filter(v => typeof v === "string");
     }
+
+    console.log("Normalized imageUrls:", imageUrls);
 
     res.status(200).json({ imageUrls });
   } catch (err) {
