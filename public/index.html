@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nano Banana (Vercel)</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>🍌 Nano Banana (Replicate) – Vercel</h1>
+    <div class="sub">Text‑to‑Image, Edit & Blend ảnh theo prompt</div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <label class="label">Prompt</label>
+      <textarea id="prompt" class="input" rows="3" placeholder="Ví dụ: Thay mái tóc thành màu bạch kim, giữ mọi thứ còn lại y hệt..."></textarea>
+
+      <div class="row">
+        <div class="col">
+          <label class="label">Ảnh (tùy chọn, tối đa 4)</label>
+          <div id="dropzone" class="dropzone">
+            <input id="images" type="file" accept="image/png,image/jpeg,image/webp" multiple />
+            <span>Kéo thả ảnh vào đây hoặc bấm để chọn</span>
+          </div>
+          <div id="preview" class="preview"></div>
+        </div>
+        <div class="col">
+          <label class="label">Định dạng xuất</label>
+          <select id="format" class="input">
+            <option value="jpg" selected>JPG (mặc định)</option>
+            <option value="png">PNG</option>
+            <option value="webp">WEBP</option>
+          </select>
+          <button id="runBtn" class="btn primary">Chạy model</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Kết quả</h2>
+      <div id="result" class="result">
+        <div class="placeholder">Chưa có kết quả.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>Model: <code>google/nano-banana</code> qua Replicate • Kết quả trả về là URL tạm thời, hãy tải về nếu cần lưu. </small>
+  </footer>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
