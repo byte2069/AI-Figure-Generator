@@ -15,13 +15,8 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (!prompt && (!images || images.length === 0)) {
-      res.status(400).json({ error: "Yêu cầu nhập prompt hoặc ít nhất 1 ảnh." });
-      return;
-    }
-
     const payload = {
-      model: "google/nano-banana",
+      version: process.env.MODEL_VERSION || "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
       input: {
         prompt: prompt || "",
         output_format: output_format || "jpg",

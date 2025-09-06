@@ -1,1 +1,107 @@
-body{background:#111;color:#fff;font-family:sans-serif;}
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: #0d1117;
+  color: #e6edf3;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.studio-container {
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+.input-card {
+  background: #161b22;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.prompt-box {
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: #fff;
+  font-size: 18px;
+  min-height: 80px;
+  width: 100%;
+}
+
+.preview img {
+  max-height: 200px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.upload-btn span {
+  font-size: 22px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  background: #21262d;
+  color: #fff;
+  transition: background 0.2s;
+}
+.upload-btn span:hover {
+  background: #30363d;
+}
+
+.run-btn {
+  background: #ffd43b;
+  color: #000;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.run-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.5);
+}
+
+.run-btn kbd {
+  font-size: 12px;
+  background: #000;
+  color: #ffd43b;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.result-area {
+  margin-top: 30px;
+}
+
+.result-area img {
+  max-width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}

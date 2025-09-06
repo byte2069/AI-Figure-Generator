@@ -1,1 +1,29 @@
-<!doctype html><html><body><h1>JSON Fix UI</h1><div id='preview'></div><textarea id='prompt'></textarea><button id='runBtn'>Run</button><div id='result'></div><input id='images' type='file' multiple /></body><script src='/app.js'></script></html>
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nano Banana Studio</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="studio-container">
+    <h1 class="logo">🍌 Nano Banana Studio</h1>
+    <div class="input-card">
+      <div id="preview" class="preview"></div>
+      <textarea id="prompt" class="prompt-box" placeholder="Start typing a prompt..."></textarea>
+      <div class="actions">
+        <label class="upload-btn">
+          <input id="images" type="file" accept="image/png,image/jpeg,image/webp" hidden multiple />
+          <span>＋</span>
+        </label>
+        <button id="runBtn" class="run-btn">Run <kbd>Ctrl ↵</kbd></button>
+      </div>
+    </div>
+    <div id="result" class="result-area">
+      <div class="placeholder">Kết quả sẽ hiển thị ở đây</div>
+    </div>
+  </div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
