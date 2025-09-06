@@ -4,6 +4,7 @@ const imagesEl = document.getElementById("images");
 const runBtn = document.getElementById("runBtn");
 const resultEl = document.getElementById("result");
 const previewEl = document.getElementById("preview");
+const debugEl = document.getElementById("debug");
 
 function resetResult(text = "Kết quả sẽ hiển thị ở đây") {
   resultEl.innerHTML = `<div class="placeholder">${text}</div>`;
@@ -21,20 +22,16 @@ imagesEl.addEventListener("change", () => {
 });
 
 async function uploadToBlob(file) {
-  // Lấy uploadUrl từ backend
   const resp = await fetch("/api/upload", { method: "POST" });
-  const { url } = await resp.json();
-
-  // Upload trực tiếp file đến Vercel Blob
-  const putResp = await fetch(url, {
-    method: "PUT",
-    headers: { "Content-Type": file.type },
-    body: file,
-  });
-  if (!putResp.ok) throw new Error("Upload failed");
-
-  // Trả về link ảnh public (url không có query string)
-  return url.split("?")[0];
+  const text = await resp.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    debugEl.textContent = "Upload API raw response: " + text;
+    throw new Error("Upload API returned non-JSON.");
+  }
+  return data.url.split("?")[0];
 }
 
 function showSpinner() {
@@ -46,6 +43,7 @@ function showSpinner() {
 }
 
 runBtn.addEventListener("click", async () => {
+  debugEl.textContent = "";
   try {
     runBtn.disabled = true;
     showSpinner();
@@ -68,9 +66,12 @@ runBtn.addEventListener("click", async () => {
     try {
       data = JSON.parse(text);
     } catch (e) {
-      throw new Error("Generate API returned non-JSON: " + text);
+      debugEl.textContent = "Generate API raw response: " + text;
+      throw new Error("Generate API returned non-JSON.");
     }
     if (!resp.ok) throw new Error(data.error || "Request failed");
+
+    debugEl.textContent = "Raw output: " + JSON.stringify(data.raw || data, null, 2);
 
     if (data.urls && data.urls.length > 0) {
       resultEl.innerHTML = `

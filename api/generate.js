@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       );
     }
 
-    res.status(200).json({ urls });
+    res.status(200).json({ urls, raw: output });
   } catch (err) {
     console.error("Generate error:", err);
     res.status(500).json({ error: err.message || "Internal error" });
