@@ -21,18 +21,20 @@ imagesEl.addEventListener("change", () => {
 });
 
 async function uploadToBlob(file) {
-  const fd = new FormData();
-  fd.append("file", file);
-  const resp = await fetch("/api/upload", { method: "POST", body: fd });
-  const text = await resp.text();
-  let data;
-  try {
-    data = JSON.parse(text);
-  } catch (e) {
-    throw new Error("Upload API returned non-JSON: " + text);
-  }
-  if (!resp.ok) throw new Error(data.error || "Upload failed");
-  return data.url;
+  // Lấy uploadUrl từ backend
+  const resp = await fetch("/api/upload", { method: "POST" });
+  const { url } = await resp.json();
+
+  // Upload trực tiếp file đến Vercel Blob
+  const putResp = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+  if (!putResp.ok) throw new Error("Upload failed");
+
+  // Trả về link ảnh public (url không có query string)
+  return url.split("?")[0];
 }
 
 function showSpinner() {
