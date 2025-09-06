@@ -21,17 +21,26 @@ export default async function handler(req, res) {
       return;
     }
 
-    const file = files.file;
+    let file = files.file;
+    if (Array.isArray(file)) file = file[0];
+
     if (!file) {
       res.status(400).json({ error: "No file uploaded" });
       return;
     }
 
-    const stream = fs.createReadStream(file.filepath);
-    const blob = await put(`uploads/${file.originalFilename}`, stream, {
-      access: "public",
-    });
+    try {
+      // Đọc file an toàn bằng buffer thay vì stream
+      const buffer = await fs.promises.readFile(file.filepath);
 
-    res.status(200).json({ url: blob.url });
+      const blob = await put(`uploads/${file.originalFilename}`, buffer, {
+        access: "public",
+      });
+
+      res.status(200).json({ url: blob.url });
+    } catch (err) {
+      console.error("Upload error:", err);
+      res.status(500).json({ error: "Upload failed", details: err.message });
+    }
   });
 }
