@@ -69,10 +69,16 @@ runBtn.addEventListener("click", async () => {
       throw new Error("Generate API returned non-JSON: " + text);
     }
     if (!resp.ok) throw new Error(data.error || "Request failed");
+
     if (data.imagesBase64 && data.imagesBase64.length > 0) {
       resultEl.innerHTML = `
         <div class="gallery">
           ${data.imagesBase64.map(b64 => `<img src="${b64}" class="result-img" alt="result" />`).join("")}
+        </div>`;
+    } else if (data.urls && data.urls.length > 0) {
+      resultEl.innerHTML = `
+        <div class="gallery">
+          ${data.urls.map(url => `<img src="${url}" class="result-img" alt="result" />`).join("")}
         </div>`;
     } else {
       resetResult("Không nhận được ảnh.");

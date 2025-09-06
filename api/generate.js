@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 
 async function urlToBase64(url) {
   const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Fetch failed ${resp.status}`);
   const buffer = await resp.arrayBuffer();
   const base64 = Buffer.from(buffer).toString("base64");
   const mime = resp.headers.get("content-type") || "image/jpeg";
@@ -74,22 +75,20 @@ export default async function handler(req, res) {
     }
 
     console.log("Replicate raw output:", data.output);
-    const urls = extractStrings(data.output);
+    const urls = extractStrings(data.output).filter(u => typeof u === "string" && u.startsWith("http"));
     console.log("Extracted urls:", urls);
 
     const imagesBase64 = [];
     for (const u of urls) {
-      if (typeof u === "string" && u.startsWith("http")) {
-        try {
-          const b64 = await urlToBase64(u);
-          imagesBase64.push(b64);
-        } catch (err) {
-          console.error("Error fetching image url:", u, err);
-        }
+      try {
+        const b64 = await urlToBase64(u);
+        imagesBase64.push(b64);
+      } catch (err) {
+        console.error("Error fetching image url:", u, err);
       }
     }
 
-    res.status(200).json({ imagesBase64 });
+    res.status(200).json({ urls, imagesBase64 });
   } catch (err) {
     console.error("Generate error:", err);
     res.status(500).json({ error: err.message || "Internal error" });
