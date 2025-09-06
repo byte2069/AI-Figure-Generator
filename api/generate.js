@@ -32,14 +32,13 @@ export default async function handler(req, res) {
     }
 
     const payload = {
-  version: process.env.MODEL_VERSION || "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
-  input: {
-    text: prompt || "",   // 👈 sửa từ prompt → text
-    output_format: output_format || "jpg",
-    ...(images && images.length > 0 ? { image_input: images } : {})
-  }
-};
-
+      version: process.env.MODEL_VERSION || "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
+      input: {
+        text: prompt || "",   // FIX: use text instead of prompt
+        output_format: output_format || "jpg",
+        ...(images && images.length > 0 ? { image_input: images } : {})
+      }
+    };
 
     const resp = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
