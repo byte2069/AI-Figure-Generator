@@ -70,9 +70,10 @@ runBtn.addEventListener("click", async () => {
     }
     if (!resp.ok) throw new Error(data.error || "Request failed");
     if (data.imageUrls && data.imageUrls.length > 0) {
-      resultEl.innerHTML = data.imageUrls
-        .map(url => `<img src="${url}" class="result-img" alt="result" />`)
-        .join("");
+      resultEl.innerHTML = `
+        <div class="gallery">
+          ${data.imageUrls.map(url => `<img src="${url}" class="result-img" alt="result" />`).join("")}
+        </div>`;
     } else {
       resetResult("Không nhận được URL ảnh.");
     }

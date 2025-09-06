@@ -100,8 +100,14 @@ body {
   margin-top: 30px;
 }
 
+.result-area .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
 .result-area img.result-img {
-  max-width: 100%;
+  width: 100%;
   border-radius: 16px;
   margin-top: 10px;
   box-shadow: 0 0 20px rgba(0,0,0,0.6);

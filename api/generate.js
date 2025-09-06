@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     const payload = {
       version: process.env.MODEL_VERSION || "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
       input: {
-        text: prompt || "",
+        prompt: prompt || "",
         output_format: output_format || "jpg",
         ...(images && images.length > 0 ? { image_input: images } : {})
       }
@@ -66,7 +66,6 @@ export default async function handler(req, res) {
     }
 
     console.log("Replicate raw output:", data.output);
-
     const imageUrls = extractStrings(data.output);
     console.log("Normalized imageUrls:", imageUrls);
 
