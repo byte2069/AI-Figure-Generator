@@ -7,7 +7,7 @@ export default function Sidebar({ setPrompt }) {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const prompts = [
-    { title: "Prompt 1", value: "Use the nano-banana model to create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base with no text. On the computer screen, show the ZBrush modeling process of the figure. Beside the computer screen, place a datnh-style toy packaging box printed with the original artwork." },
+    { title: "Prompt 1", value: "Use the nano-banana model to create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base with no text. On the computer screen, show the ZBrush modeling process of the figure. Beside the computer screen, place a datnh style toy packaging box printed with the original artwork." },
     { title: "Prompt 2", value: "Một bức tượng thần thoại Hy Lạp bằng đồng" },
     { title: "Prompt 3", value: "Nhân vật anime phong cách Studio Ghibli" },
     { title: "Prompt 4", value: "Robot chiến binh đứng trên núi tuyết" },
