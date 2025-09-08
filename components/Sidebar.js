@@ -1,17 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import favicon from "../public/favicon.png";
 
 export default function Sidebar({ setPrompt }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // mặc định ẩn
   const [activeIndex, setActiveIndex] = useState(null);
-
-  // ✅ Auto mở sidebar khi load trên PC
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-      setOpen(true);
-    }
-  }, []);
 
   const prompts = [
     { title: "Prompt 1", value: "Use the nano-banana model..." },
@@ -23,20 +16,11 @@ export default function Sidebar({ setPrompt }) {
 
   return (
     <>
-      {/* Overlay cho mobile */}
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setOpen(false)}
-        ></div>
-      )}
-
-      {/* Sidebar */}
+      {/* Sidebar trượt vào/ra */}
       <div
         className={`fixed top-0 left-0 h-screen bg-neutral-900 text-white shadow-lg border-r border-neutral-800
-          transform transition-transform duration-300 ease-in-out z-40
-          ${open ? "translate-x-0 w-64" : "-translate-x-full w-64 lg:translate-x-0"}
-        `}
+          transform transition-transform duration-300 ease-in-out
+          ${open ? "translate-x-0 w-64" : "-translate-x-full w-64"}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-neutral-800">
@@ -44,12 +28,22 @@ export default function Sidebar({ setPrompt }) {
             <Image src={favicon} alt="Logo" width={28} height={28} />
             <span className="font-semibold text-sm">datnh</span>
           </div>
-          {/* Toggle button → luôn hiện trên PC, chỉ hiện khi open ở mobile */}
+
+          {/* Toggle button nằm trong header */}
           <button
             onClick={() => setOpen(!open)}
             className="p-2 hover:bg-neutral-800 rounded transition"
           >
-            {open ? "✕" : "☰"}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6 text-gray-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
         </div>
 
@@ -67,7 +61,7 @@ export default function Sidebar({ setPrompt }) {
               onClick={() => {
                 setPrompt(item.value);
                 setActiveIndex(i);
-                if (window.innerWidth < 1024) setOpen(false); // Mobile auto đóng
+                setOpen(false); // tự động đóng sidebar
               }}
               title={item.value}
             >
@@ -77,13 +71,22 @@ export default function Sidebar({ setPrompt }) {
         </ul>
       </div>
 
-      {/* Toggle khi sidebar đóng trên mobile */}
+      {/* Nút toggle khi sidebar đóng → hiển thị riêng lẻ ngoài màn hình */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed top-4 left-4 z-50 p-2 bg-neutral-900 rounded hover:bg-neutral-800 transition lg:hidden"
+          className="fixed top-4 left-4 z-50 p-2 bg-neutral-900 rounded hover:bg-neutral-800 transition"
         >
-          ☰
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 text-gray-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
         </button>
       )}
     </>
