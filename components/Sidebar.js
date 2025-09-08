@@ -6,7 +6,7 @@ export default function Sidebar({ setPrompt }) {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
 
-  // Auto mở sidebar khi load trên PC
+  // ✅ Auto mở sidebar khi load trên PC
   useEffect(() => {
     if (typeof window !== "undefined" && window.innerWidth >= 1024) {
       setOpen(true);
@@ -44,12 +44,12 @@ export default function Sidebar({ setPrompt }) {
             <Image src={favicon} alt="Logo" width={28} height={28} />
             <span className="font-semibold text-sm">datnh</span>
           </div>
-          {/* Nút đóng chỉ hiện trên mobile */}
+          {/* Toggle button → luôn hiện trên PC, chỉ hiện khi open ở mobile */}
           <button
-            onClick={() => setOpen(false)}
-            className="p-2 hover:bg-neutral-800 rounded transition lg:hidden"
+            onClick={() => setOpen(!open)}
+            className="p-2 hover:bg-neutral-800 rounded transition"
           >
-            ✕
+            {open ? "✕" : "☰"}
           </button>
         </div>
 
@@ -77,22 +77,13 @@ export default function Sidebar({ setPrompt }) {
         </ul>
       </div>
 
-      {/* Nút toggle khi sidebar đóng (chỉ cho mobile) */}
+      {/* Toggle khi sidebar đóng trên mobile */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
           className="fixed top-4 left-4 z-50 p-2 bg-neutral-900 rounded hover:bg-neutral-800 transition lg:hidden"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 text-gray-300"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          ☰
         </button>
       )}
     </>
