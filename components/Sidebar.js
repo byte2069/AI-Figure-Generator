@@ -14,13 +14,13 @@ export default function Sidebar({ setPrompt }) {
     { title: "Prompt 5", value: "Chân dung phong cách tranh sơn dầu" },
   ];
 
-  // Auto mở trên PC, đóng trên mobile
+  // Auto mở PC, đóng mobile
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (window.innerWidth >= 768) {
-        setOpen(true); // PC auto mở
+        setOpen(true);
       } else {
-        setOpen(false); // Mobile auto đóng
+        setOpen(false);
       }
     }
   }, []);
@@ -71,7 +71,7 @@ export default function Sidebar({ setPrompt }) {
         />
       </div>
 
-      {/* Nút toggle mobile khi sidebar đóng */}
+      {/* ✅ Nút toggle riêng cho mobile khi sidebar đóng */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -106,6 +106,7 @@ function SidebarContent({
     <>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-neutral-800">
+        {/* Logo */}
         <div
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => window.location.reload()}
@@ -115,6 +116,8 @@ function SidebarContent({
             <span className="font-semibold text-sm hidden md:inline">datnh</span>
           )}
         </div>
+
+        {/* Toggle button trong header (chỉ hiện khi sidebar mở) */}
         <button
           onClick={() => setOpen(!open)}
           className="p-2 hover:bg-neutral-800 rounded transition"
@@ -146,7 +149,7 @@ function SidebarContent({
             onClick={() => {
               setPrompt(item.value);
               setActiveIndex(i);
-              if (window.innerWidth < 768) setOpen(false);
+              if (window.innerWidth < 768) setOpen(false); // mobile auto đóng
             }}
             title={item.value}
           >
