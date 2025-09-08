@@ -18,20 +18,20 @@ export default function Sidebar({ setPrompt }) {
     { title: "Prompt 5", value: "Chân dung phong cách tranh sơn dầu" },
   ];
 
-  // ✅ Auto mở sidebar trên PC, đóng trên mobile
+  // ✅ Auto mở trên PC, đóng trên mobile
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (window.innerWidth >= 768) {
-        setOpen(true); // PC
+        setOpen(true); // PC auto mở
       } else {
-        setOpen(false); // Mobile
+        setOpen(false); // Mobile auto đóng
       }
     }
   }, []);
 
   return (
     <>
-      {/* Overlay khi sidebar mở (chỉ hiện trên mobile) */}
+      {/* Overlay cho mobile */}
       {open && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
@@ -43,7 +43,7 @@ export default function Sidebar({ setPrompt }) {
       <div
         className={`fixed top-0 left-0 h-screen bg-neutral-900 text-white shadow-lg border-r border-neutral-800
           transform transition-transform duration-300 ease-in-out z-50
-          ${open ? "translate-x-0 w-64" : "-translate-x-full w-64 md:translate-x-0 md:w-64"}
+          ${open ? "translate-x-0 w-64" : "-translate-x-full w-64 md:translate-x-0 md:w-16"}
         `}
       >
         {/* Header */}
@@ -54,13 +54,13 @@ export default function Sidebar({ setPrompt }) {
             onClick={() => window.location.reload()} // reload toàn trang
           >
             <Image src={favicon} alt="Logo" width={28} height={28} />
-            <span className="font-semibold text-sm">datnh</span>
+            {open && <span className="font-semibold text-sm hidden md:inline">datnh</span>}
           </div>
 
-          {/* Toggle button (luôn hiện trên mobile, ẩn trên PC) */}
+          {/* Toggle button (luôn hiện trên PC & mobile khi sidebar mở) */}
           <button
             onClick={() => setOpen(!open)}
-            className="p-2 hover:bg-neutral-800 rounded transition md:hidden"
+            className="p-2 hover:bg-neutral-800 rounded transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,17 +89,17 @@ export default function Sidebar({ setPrompt }) {
               onClick={() => {
                 setPrompt(item.value);
                 setActiveIndex(i);
-                if (window.innerWidth < 768) setOpen(false); // Auto đóng khi chọn prompt trên mobile
+                if (window.innerWidth < 768) setOpen(false); // mobile auto đóng
               }}
               title={item.value}
             >
-              {item.title}
+              {open && <span className="truncate">{item.title}</span>}
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Toggle button khi sidebar đóng (chỉ hiện trên mobile) */}
+      {/* ✅ Toggle button luôn hiển thị trên mobile khi sidebar đóng */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
