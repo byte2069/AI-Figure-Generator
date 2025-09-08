@@ -3,7 +3,7 @@ import Image from "next/image";
 import favicon from "../public/favicon.png";
 
 export default function Sidebar({ setPrompt }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
 
   const prompts = [
@@ -18,46 +18,49 @@ export default function Sidebar({ setPrompt }) {
     { title: "Prompt 5", value: "Chân dung phong cách tranh sơn dầu" },
   ];
 
-  // ✅ PC auto mở, mobile auto đóng
+  // ✅ Auto mở sidebar trên PC, đóng trên mobile
   useEffect(() => {
-    if (window.innerWidth >= 768) {
-      setOpen(true); // PC mở
-    } else {
-      setOpen(false); // Mobile đóng
+    if (typeof window !== "undefined") {
+      if (window.innerWidth >= 768) {
+        setOpen(true); // PC
+      } else {
+        setOpen(false); // Mobile
+      }
     }
   }, []);
 
   return (
     <>
-      {/* Overlay cho mobile */}
-      {open && window.innerWidth < 768 && (
+      {/* Overlay khi sidebar mở (chỉ hiện trên mobile) */}
+      {open && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setOpen(false)}
         ></div>
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-screen bg-neutral-900 text-white shadow-lg border-r border-neutral-800 z-50
-          transition-transform duration-300 ease-in-out
-          ${open ? "translate-x-0 w-64" : "-translate-x-full w-64"}`}
+        className={`fixed top-0 left-0 h-screen bg-neutral-900 text-white shadow-lg border-r border-neutral-800
+          transform transition-transform duration-300 ease-in-out z-50
+          ${open ? "translate-x-0 w-64" : "-translate-x-full w-64 md:translate-x-0 md:w-64"}
+        `}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-neutral-800">
-          {/* Logo reload */}
+          {/* Logo */}
           <div
             className="flex items-center gap-2 cursor-pointer"
-            onClick={() => window.location.reload()} // reload toàn bộ trang
+            onClick={() => window.location.reload()} // reload toàn trang
           >
             <Image src={favicon} alt="Logo" width={28} height={28} />
-            {open && <span className="font-semibold text-sm">datnh</span>}
+            <span className="font-semibold text-sm">datnh</span>
           </div>
 
-          {/* Toggle button */}
+          {/* Toggle button (luôn hiện trên mobile, ẩn trên PC) */}
           <button
             onClick={() => setOpen(!open)}
-            className="p-2 hover:bg-neutral-800 rounded transition"
+            className="p-2 hover:bg-neutral-800 rounded transition md:hidden"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -86,21 +89,21 @@ export default function Sidebar({ setPrompt }) {
               onClick={() => {
                 setPrompt(item.value);
                 setActiveIndex(i);
-                if (window.innerWidth < 768) setOpen(false); // mobile auto đóng
+                if (window.innerWidth < 768) setOpen(false); // Auto đóng khi chọn prompt trên mobile
               }}
               title={item.value}
             >
-              {open && <span className="truncate">{item.title}</span>}
+              {item.title}
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Nút toggle khi sidebar đóng */}
+      {/* Toggle button khi sidebar đóng (chỉ hiện trên mobile) */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed top-4 left-4 z-50 p-2 bg-neutral-900 rounded hover:bg-neutral-800 transition"
+          className="fixed top-4 left-4 z-50 p-2 bg-neutral-900 rounded hover:bg-neutral-800 transition md:hidden"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
