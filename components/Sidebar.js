@@ -12,7 +12,7 @@ export default function Sidebar({ setPrompt }) {
     { title: "Underwater", value: "Underwater people, underwater lighting, realistic bubbles and water refraction effects. Hyper-realistic and natural shadows. Ensure people stay true to the original photo, fully integrated into the underwater environment, preserving facial and body details" },
   ];
 
-  // Auto mở trên PC, đóng trên mobile
+ // Auto mở trên PC, đóng trên mobile
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (window.innerWidth >= 768) {
@@ -54,8 +54,10 @@ export default function Sidebar({ setPrompt }) {
       {/* Sidebar cho desktop */}
       <div
         className={`
-          hidden md:flex md:flex-col md:h-screen md:static md:z-auto bg-neutral-900 text-white shadow-lg border-r border-neutral-800
-          transition-all duration-300 ease-in-out flex-shrink-0
+          hidden md:flex md:flex-col md:h-screen md:fixed md:top-0 md:left-0
+    bg-neutral-900 text-white shadow-lg border-r border-neutral-800
+    transition-all duration-300 ease-in-out flex-shrink-0
+
           ${open ? "md:w-64" : "md:w-16"}
         `}
       >
@@ -155,3 +157,4 @@ function SidebarContent({
     </>
   );
 }
+
