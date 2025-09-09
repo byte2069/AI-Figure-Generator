@@ -23,7 +23,7 @@ export default function Sidebar({ setPrompt }) {
     }
   }, []);
 
-  return (
+return (
     <>
       {/* Overlay cho mobile */}
       {open && (
@@ -54,7 +54,7 @@ export default function Sidebar({ setPrompt }) {
       {/* Sidebar cho desktop */}
       <div
         className={`
-          hidden md:flex md:flex-col md:h-screen md:fixed md:top-0 md:left-0
+          hidden md:flex md:flex-col md:h-screen md:static md:top-0 md:left-0
     bg-neutral-900 text-white shadow-lg border-r border-neutral-800
     transition-all duration-300 ease-in-out flex-shrink-0
 
@@ -157,4 +157,5 @@ function SidebarContent({
     </>
   );
 }
+
 
