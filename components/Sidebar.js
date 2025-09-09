@@ -8,7 +8,7 @@ export default function Sidebar({ setPrompt }) {
 
   const prompts = [
     { title: "Prompt 1", value: "Use the nano-banana model to create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base with no text. On the computer screen, show the ZBrush modeling process of the figure. Beside the computer screen, place a BANDAI-style toy packaging box printed with the original artwork." },
-    { title: "Prompt 2", value: "Một bức tượng thần thoại Hy Lạp bằng đồng" },
+    { title: "Career Toy Maker", value: "A full-figure action figure of a [GENDER] displayed in its original blister pack packaging. 3D toy style. On the top packaging card, the name '[NAME]' is written prominently, with the role '[CAREER]' written below it. The figure represents [TÊN_NGƯỜI] and is wearing [OUTFIT]. Inside the blister pack, next to the figure, are the following accessories: [ACCESSORIES]. The packaging card has a [BOX_DESIGN]. [OPTIONAL_STYLE]. Photorealistic rendering, studio lighting, clear focus on the packaging and figure. --ar 2:3" },
     { title: "Prompt 3", value: "Nhân vật anime phong cách Studio Ghibli" },
     { title: "Prompt 4", value: "Robot chiến binh đứng trên núi tuyết" },
     { title: "Prompt 5", value: "Chân dung phong cách tranh sơn dầu" },
