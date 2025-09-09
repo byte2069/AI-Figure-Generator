@@ -14,13 +14,13 @@ export default function Sidebar({ setPrompt }) {
     { title: "Prompt 5", value: "Chân dung phong cách tranh sơn dầu" },
   ];
 
-  // Auto mở PC, đóng mobile
+  // Auto mở trên PC, đóng trên mobile
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (window.innerWidth >= 768) {
-        setOpen(true);
+        setOpen(true); // PC auto mở
       } else {
-        setOpen(false);
+        setOpen(false); // Mobile auto đóng
       }
     }
   }, []);
@@ -53,15 +53,14 @@ export default function Sidebar({ setPrompt }) {
         />
       </div>
 
-      {/* Sidebar cho desktop (cố định khi scroll) */}
-<div
-  className={`
-    hidden md:flex md:flex-col md:h-screen md:fixed md:top-0 md:left-0
-    bg-neutral-900 text-white shadow-lg border-r border-neutral-800
-    transition-all duration-300 ease-in-out flex-shrink-0
-    ${open ? "md:w-64" : "md:w-16"}
-  `}
->
+      {/* Sidebar cho desktop */}
+      <div
+        className={`
+          hidden md:flex md:flex-col md:h-screen md:static md:z-auto bg-neutral-900 text-white shadow-lg border-r border-neutral-800
+          transition-all duration-300 ease-in-out flex-shrink-0
+          ${open ? "md:w-64" : "md:w-16"}
+        `}
+      >
         <SidebarContent
           open={open}
           setOpen={setOpen}
@@ -72,7 +71,7 @@ export default function Sidebar({ setPrompt }) {
         />
       </div>
 
-      {/* ✅ Nút toggle riêng cho mobile khi sidebar đóng */}
+      {/* Nút toggle mobile khi sidebar đóng */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -107,7 +106,6 @@ function SidebarContent({
     <>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-neutral-800">
-        {/* Logo */}
         <div
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => window.location.reload()}
@@ -117,8 +115,6 @@ function SidebarContent({
             <span className="font-semibold text-sm hidden md:inline">datnh</span>
           )}
         </div>
-
-        {/* Toggle button trong header (chỉ hiện khi sidebar mở) */}
         <button
           onClick={() => setOpen(!open)}
           className="p-2 hover:bg-neutral-800 rounded transition"
@@ -150,7 +146,7 @@ function SidebarContent({
             onClick={() => {
               setPrompt(item.value);
               setActiveIndex(i);
-              if (window.innerWidth < 768) setOpen(false); // mobile auto đóng
+              if (window.innerWidth < 768) setOpen(false);
             }}
             title={item.value}
           >
