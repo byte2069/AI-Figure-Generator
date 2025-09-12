@@ -16,6 +16,4 @@ Open [http://localhost:3000](http://localhost:3000).
 3. Add environment variables `REPLICATE_API_TOKEN` and `BLOB_READ_WRITE_TOKEN`
 <<<<<<< HEAD
 4. Deploy & enjoy
-=======
-4. Deploy & enjoy
 
